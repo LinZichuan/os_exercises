@@ -15,11 +15,11 @@
 ## 3.3 中断、异常和系统调用比较
  1. 举例说明Linux中有哪些中断，哪些异常？
  1. Linux的系统调用有哪些？大致的功能分类有哪些？  (w2l1)
- ```
+```
  (1)Linux的系统调用有fork、clone、execve等上百个；
  (2)大致的功能分类是：进程控制、文件系统控制、系统控制、内存管理、网络管理、socket控制、用户管理、进程间通信等等。
  (3)扩展说明：Linux系统调用的列表包含了大部分常用系统调用和由系统调用派生出的的函数，其中有一些函数的作用完全相同，只是参数不同，这是由于Linux核心是用C语言写的，所以只能取成不同的函数名，不能用函数重载。
- ```
+```
 ```
   + 采分点：说明了Linux的大致数量（上百个），说明了Linux系统调用的主要分类（文件操作，进程管理，内存管理等）
   - 答案没有涉及上述两个要点；（0分）
@@ -29,31 +29,31 @@
  ```
  
  1. 以ucore lab8的answer为例，uCore的系统调用有哪些？大致的功能分类有哪些？(w2l1)
- ```
-    [SYS_exit]              sys_exit,
-    [SYS_fork]              sys_fork,
-    [SYS_wait]              sys_wait,
-    [SYS_exec]              sys_exec,
-    [SYS_yield]             sys_yield,
-    [SYS_kill]              sys_kill,
-    [SYS_getpid]            sys_getpid,
-    [SYS_putc]              sys_putc,
-    [SYS_pgdir]             sys_pgdir,
-    [SYS_gettime]           sys_gettime,
-    [SYS_lab6_set_priority] sys_lab6_set_priority,
-    [SYS_sleep]             sys_sleep,
-    [SYS_open]              sys_open,
-    [SYS_close]             sys_close,
-    [SYS_read]              sys_read,
-    [SYS_write]             sys_write,
-    [SYS_seek]              sys_seek,
-    [SYS_fstat]             sys_fstat,
-    [SYS_fsync]             sys_fsync,
-    [SYS_getcwd]            sys_getcwd,
-    [SYS_getdirentry]       sys_getdirentry,
-    [SYS_dup]               sys_dup,
-    大致有22个，主要分为文件操作（open，close等），进程管理（exit，fork等），线程管理，内存管理。
- ```
+```
+[SYS_exit]              sys_exit,
+[SYS_fork]              sys_fork,
+[SYS_wait]              sys_wait,
+[SYS_exec]              sys_exec,
+[SYS_yield]             sys_yield,
+[SYS_kill]              sys_kill,
+[SYS_getpid]            sys_getpid,
+[SYS_putc]              sys_putc,
+[SYS_pgdir]             sys_pgdir,
+[SYS_gettime]           sys_gettime,
+[SYS_lab6_set_priority] sys_lab6_set_priority,
+[SYS_sleep]             sys_sleep,
+[SYS_open]              sys_open,
+[SYS_close]             sys_close,
+[SYS_read]              sys_read,
+[SYS_write]             sys_write,
+[SYS_seek]              sys_seek,
+[SYS_fstat]             sys_fstat,
+[SYS_fsync]             sys_fsync,
+[SYS_getcwd]            sys_getcwd,
+[SYS_getdirentry]       sys_getdirentry,
+[SYS_dup]               sys_dup,
+-大致有22个，主要分为文件操作（open，close等），进程管理（exit，fork等），线程管理，内存管理。
+```
  ```
   + 采分点：说明了ucore的大致数量（二十几个），说明了ucore系统调用的主要分类（文件操作，进程管理，内存管理等）
   - 答案没有涉及上述两个要点；（0分）
