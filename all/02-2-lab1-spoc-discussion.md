@@ -117,12 +117,13 @@ int main ()
 对于ucore_lab中的labcodes/lab1，我们知道如果在qemu中执行，可能会出现各种稀奇古怪的问题，比如reboot，死机，黑屏等等。请通过qemu的分析功能来动态分析并回答lab1是如何执行并最终为什么会出现这种情况？
 - [x]  
 
-> 
+> lab1执行过程：先执行bootloader将ucore os调入内存，再执行ucore os将操作系统运行起来。
+> 出现reboot等问题的原因可能是将程序调入内存的时候发生了错误。
 
 对于ucore_lab中的labcodes/lab1,如果出现了reboot，死机，黑屏等现象，请思考设计有效的调试方法来分析常在现背后的原因。
 - [x]  
 
-> 
+> 可以用gdb进行单步调试，并在必要的地方使用printf打印出需要查看的变量信息。
 
 ---
 
