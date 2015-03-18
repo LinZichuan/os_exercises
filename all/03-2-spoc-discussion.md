@@ -13,7 +13,14 @@ NOTICE
 ---
 
 （1） (w3l2) 请简要分析64bit CPU体系结构下的分页机制是如何实现的
-
+```
+(1)64 bitCPU支持的物理内存大小限制是2^64个字节;
+(2)多级页表的结构是五级结构;
+(3)多级页表的虚拟地址->物理地址的映射过程：从虚拟地址中取出一段来作为索引，在页目录表中查找下一级页表的起始地址，
+然后再从虚拟地址中取出下一段来作为下一级页表的索引，以此类推，直至找到最后一级页表，并取页的物理起始地址，并与
+虚拟地址中的页内偏移共同组成物理内存地址。
+多级页表的好处是：如果页表项很大的话，可以不用存在一块连续的内存当中。
+```
 ```
   + 采分点：说明64bit CPU架构的分页机制的大致特点和页表执行过程
   - 答案没有涉及如下3点；（0分）
@@ -32,7 +39,7 @@ NOTICE
 
 - [x]  
 
-> 500=0.9\*150+0.1\*x
+> 500=0.9*150 + 0.1*x   x=3650ns
 
 （2）(spoc) 有一台假想的计算机，页大小（page size）为32 Bytes，支持32KB的虚拟地址空间（virtual address space）,有4KB的物理内存空间（physical memory），采用二级页表，一个页目录项（page directory entry ，PDE）大小为1 Byte,一个页表项（page-table entries
 PTEs）大小为1 Byte，1个页目录表大小为32 Bytes，1个页表大小为32 Bytes。页目录基址寄存器（page directory base register，PDBR）保存了页目录表的物理地址（按页对齐）。
@@ -52,6 +59,99 @@ PFN6..0:页帧号
 PT6..0:页表的物理基址>>5
 ```
 在[物理内存模拟数据文件](./03-2-spoc-testdata.md)中，给出了4KB物理内存空间的值，请回答下列虚地址是否有合法对应的物理内存，请给出对应的pde index, pde contents, pte index, pte contents。
+Write a program to compute the pde index and so on
+```
+#include <iostream>
+#include <fstream>
+#include <cstdio>
+#include <vector>
+using namespace std;
+
+void parse(string vp, int* b) {
+  int begin = 15;
+  int end = 3;
+  while(begin > 0) {
+    if ('9'-vp[end] >= 0){
+      int p = vp[end]-'0';
+      b[begin--] = p % 2;
+      b[begin--] = p % 4 / 2;
+      b[begin--] = p % 8 / 4;
+      b[begin--] = 0;
+    } else {
+      int p = vp[end] - 'a' + 10;
+      b[begin--] = p % 2;
+      b[begin--] = p % 4 / 2;
+      b[begin--] = p % 8 / 4;
+      b[begin--] = p / 8;
+    }
+    end--;
+  }
+  //for (int i=0;i<16;++i) cout << b[i];
+  //cout << endl;
+}
+int main() {
+  fstream fin("addr");
+  string a[128][32];
+  int num;
+  while(fin >> num) {
+    for (int i=0; i<32; ++i) {
+      fin >> a[num][i];
+    }
+  }
+  cout << "input vp:";
+  string vp;
+  cin >> vp;
+  int b[16];
+  parse(vp, b);
+  vector<int> pde_index(b+1, b+6);
+  int pde_index_num=0, two=1;
+  for (int i=pde_index.size()-1; i>=0; --i) {
+    pde_index_num += two * pde_index[i];
+    two *= 2;
+  }
+  cout << pde_index_num << endl;
+  cout << "pde index:0x";
+  cout << pde_index_num/16;
+  if (pde_index_num%16>=10) cout << char(97+(pde_index_num%16-10));
+  else cout << pde_index_num%16;
+  string tt = a[17][pde_index_num];
+  cout << "  pde contents:";
+  cout << "valid:" << (tt[0]>8) << ", pfn:";
+  int d  = (tt[1]>='a')?(tt[1]-'a'+10):(tt[1]-'0');
+  d += 16*((tt[0]>='a')?(tt[0]-'a'+10):(tt[0]-'0'));
+  d = d % 128;
+  printf("0x%x\n", d);
+
+  cout << "pte index:";
+  vector<int> pte_index(b+6, b+11);
+  int pte_index_num=0; 
+  two=1;
+  for (int i=pte_index.size()-1; i>=0; --i) {
+    pte_index_num += two * pte_index[i];
+    two *= 2;
+  }
+  printf("0x%x  ", pte_index_num);
+  tt = a[d][pte_index_num];
+  cout << "pte contents:";
+  cout << "valid:" << (tt[0]>8) << ", pfn:";
+  d  = (tt[1]>='a')?(tt[1]-'a'+10):(tt[1]-'0');
+  d += 16*((tt[0]>='a')?(tt[0]-'a'+10):(tt[0]-'0'));
+  d = d % 128;
+  printf("0x%x\n", d);
+  cout << "physical address:";
+  vector<int> bias(b+11,b+16);
+  int bias_num=0;
+  two=1;
+  for (int i=bias.size()-1; i>=0; --i) {
+    bias_num += two * bias[i];
+    two *= 2;
+  }
+  int PA = (d << 5) + bias_num;
+  printf("0x%x", PA);
+  printf(", value:%s\n", a[d][bias_num].c_str());
+  return 0;
+}
+```
 ```
 Virtual Address 6c74
   -->pde index:0x1b   pde contents:(valid 1, pfn 0x20)
