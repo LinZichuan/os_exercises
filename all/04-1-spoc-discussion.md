@@ -61,7 +61,7 @@ PDE格式（8 bit） :
 ```
 其
 ```
-VALID==1表示，表示映射存在；VALID==0表示，表示内存映射不存在（有两种情况：a.对应的物理页帧swap out在硬盘上；b.既没有在内存中，页没有在硬盘上，这时页帧号为0x7F）。
+VALID==1表示，表示映射存在；VALID==0表示，表示内存映射不存在（有两种情况：a.对应的物理页帧swap out在硬盘上；b.既没有在内存中，页没有在硬盘上［disk_index＝7f的话表示fault！］）。
 PFN6..0:页帧号或外存中的后备页号
 PT6..0:页表的物理基址>>5
 ```
@@ -73,8 +73,16 @@ PT6..0:页表的物理基址>>5
 请回答下列虚地址是否有合法对应的物理内存，请给出对应的pde index, pde contents, pte index, pte contents，the value of addr in phy page OR disk sector。
 ```
 Virtual Address 6653:
+  --> pde index:0x19  pde contents:(valid 0, pfn 0x7f)
+    --> fault!
 Virtual Address 1c13:
+  --> pde index:0x7  pde contents:(valid 1, pfn 0x3d)
+    --> pte index:0x00  pte contents:(valid 1, pfn 0x76)
+      --> To Physical Address 0xed3 --> Value: 0x12
 Virtual Address 6890:
+  --> pde index:0x7  pde contents:(valid 1, pfn 0x3d)
+    --> pte index:0x00  pte contents:(valid 1, pfn 0x76)
+      --> To Physical Address 0xed3 --> Value: 0x12
 Virtual Address 0af6:
 Virtual Address 1e6f:
 ```
