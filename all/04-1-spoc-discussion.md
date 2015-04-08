@@ -28,11 +28,22 @@ void main (void) {
 ```
 可以用下的命令来编译和运行此程序：
 ```
-gcc -O0 -o goodlocality goodlocality.c
+gcc -O0 -o goodlocality goodlocality.cm
 time ./goodlocality
 ```
 可以看到其执行时间。
-
+```
+A[i][j] = i+j;
+将程序中的A[i][j]换成A[j][i]，使得程序的局部性较差，执行时间变长。
+badlocality:
+real  0m0.171s
+user  0m0.165s
+sys 0m0.004s
+goodlocality:
+real  0m0.034s
+user  0m0.028s
+sys 0m0.004s
+```
 ## 小组思考题目
 ----
 
