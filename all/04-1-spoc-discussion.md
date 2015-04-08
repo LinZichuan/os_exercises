@@ -75,24 +75,11 @@ PT6..0:页表的物理基址>>5
 
 请回答下列虚地址是否有合法对应的物理内存，请给出对应的pde index, pde contents, pte index, pte contents，the value of addr in phy page OR disk sector。
 ```
-Virtual Address 0x6653:
---> pde index: 0x19 pde contents: (valid 0x0, pfn 0x7f)
---> Fault！
-Virtual Address 0x1c13:
---> pde index: 0x7 pde contents: (valid 0x1, pfn 0x3d)
---> pte index: 0x0 pte contents: (valid 0x1, pfn 0x76)
---> Translated to Physical Address 0xed3 --> Value: 0x12
-Virtual Address 0x6890:
---> pde index: 0x1a pde contents: (valid 0x0, pfn 0x7f)
---> Fault ！
-Virtual Address 0xaf6:
---> pde index: 0x2 pde contents: (valid 0x1, pfn 0x21)
---> pte index: 0x17 pte contents: (valid 0x0, pfn 0x7f)
--> Fault ！
-Virtual Address 0x1e6f:
---> pde index: 0x7 pde contents: (valid 0x1, pfn 0x3d)
---> pte index: 0x13 pte contents: (valid 0x0, pfn 0x16)
---> Translated to Disk Address 0x2cf --> Value 0x1c
+Virtual Address 6653:
+Virtual Address 1c13:
+Virtual Address 6890:
+Virtual Address 0af6:
+Virtual Address 1e6f:
 ```
 
 回答可参考以如下表示：
