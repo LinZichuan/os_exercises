@@ -7,14 +7,20 @@
 ### 总体介绍
 
 (1) ucore的线程控制块数据结构是什么？
-
+>proc_struct
 ### 关键数据结构
 
 (2) 如何知道ucore的两个线程同在一个进程？
+>线程控制块中的cr3是一样的，以及proc_parent是一样的。
 
 (3) context和trapframe分别在什么时候用到？
+>context在切换进程的时候用到。trapframe在发生中断的时候用到，一部分是由硬件填写的，另外一部分是由中断服务例程填写的用于保存寄存器原来的值。
 
 (4) 用户态或内核态下的中断处理有什么区别？在trapframe中有什么体现？
+```
+(1)用户态中断处理需要切换特权级
+(2)内核态的中断处理不需要保存SS、ESP
+```
 
 ### 执行流程
 
@@ -31,8 +37,13 @@ tf和context中的esp
 ```
 
 (7)fork()父子进程的返回值是不同的。这在源代码中的体现中哪？
+```
+fork_out:
+return ret;
+```
 
 (8)内核线程initproc的第一次执行流程是什么样的？能跟踪出来吗？
+>
 
 ## 小组练习与思考题
 
@@ -51,12 +62,20 @@ tf和context中的esp
 请完成如下练习，完成代码填写，并形成spoc练习报告
 
 ### 1. 分析并描述创建分配进程的过程
-
 > 注意 state、pid、cr3，context，trapframe的含义
+
+```
+创建进程控制块，并初始化struct里面的值。
+先分配进程所需要的物理空间，当前进程初始化为UNINIT状态，cr3初始化为boot_cr3，pid初始化为-1。然后分配内核堆栈所需的空间，将分配的堆栈首地址保存到proc的kstack中。然后将父进程的tf复制给proc的tf，但是proc的tf的reg_eax要置为0，作为子进程的do_fork返回值，初始化proc的context。然后将proc加入进程列表中，并且wakeup子进程使之RUNNABLE。
+```
 
 ### 练习2：分析并描述新创建的内核线程是如何分配资源的
 
 > 注意 理解对kstack, trapframe, context等的初始化
+
+```
+kstack为在内存中分配的一页，trapframe的起始地址在kstack的栈顶，proc的context的eip和esp都置为当前进程的位置
+```
 
 
 当前进程中唯一，操作系统的整个生命周期不唯一，在get_pid中会循环使用pid，耗尽会等待
